@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Amaciante - Verificador de CNPJ e Pedido</title>
+  <!-- Link para o estilo compartilhado da aplicação -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,6 +13,7 @@
   </button>
   <!-- Barra de opções fixa (top-left) -->
   <div class="overlay-options" aria-hidden="false">
+    <button id="options-toggle" class="options-toggle" title="Mostrar/ocultar opções" aria-expanded="true">☰</button>
     <nav>
       <ul>
         <li><a href="/cadastro/">Cadastro</a></li>
@@ -28,6 +30,7 @@
   <main id="panel-login" class="container panel" role="tabpanel">
     <h1>Acesso</h1>
     <p>Acesse com seu CNPJ e senha para ver os produtos.</p>
+    <!-- Formulário de login do usuário -->
     <form id="login-form">
       <label for="login-cnpj">CNPJ</label>
       <input id="login-cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" autocomplete="off" />
@@ -43,7 +46,9 @@
   </main>
 
   <!-- Painel de pedidos removido daqui; usuários são redirecionados para /pedidos/ -->
+  <!-- theme.js controla o modo claro/escuro em todas as páginas -->
   <script src="/theme.js"></script>
+  <!-- script.js contém validação de login, cadastro e lógica geral do formulário -->
   <script src="script.js"></script>
 </body>
 </html>

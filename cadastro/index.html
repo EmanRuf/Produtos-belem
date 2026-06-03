@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <!-- Menu fixo de navegação no canto superior esquerdo -->
   <div class="overlay-options" aria-hidden="false">
     <nav>
       <ul>
@@ -19,21 +20,23 @@
     </nav>
   </div>
 
+  <!-- Botão para alternar entre tema claro e escuro -->
   <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
 
+  <!-- Conteúdo principal da página de cadastro -->
   <main class="container">
     <h1>Cadastro</h1>
     <p>Formulário de cadastro independente.</p>
     <form id="register-form-local">
-      <label for="name">Nome</label>
+      <label for="name" class="required">Nome</label>
       <input id="name" type="text" placeholder="Nome completo" required />
-        <label for="cnpj">CNPJ</label>
-        <input id="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" required />
+      <label for="cnpj" class="required">CNPJ</label>
+      <input id="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" required />
 
-      <label for="email">E-mail</label>
+      <label for="email" class="required">E-mail</label>
       <input id="email" type="email" placeholder="email@provedor.com" required />
 
-      <label for="password">Senha</label>
+      <label for="password" class="required">Senha</label>
       <input id="password" type="password" placeholder="Senha" required />
 
       <button type="submit">Criar conta</button>
@@ -45,33 +48,49 @@
 
   <script src="/theme.js"></script>
   <script>
+    // Seleciona o formulário e os elementos de resultado para mostrar mensagens ao usuário
     const form = document.querySelector('#register-form-local');
     const status = document.querySelector('#register-status');
     const result = document.querySelector('#register-result');
-      function getAccountsLocal() {
-        try { return JSON.parse(localStorage.getItem('accounts') || '{}'); } catch { return {}; }
+
+    // Lê os dados de contas do localStorage (armazenamento local do navegador)
+    function getAccountsLocal() {
+      try {
+        return JSON.parse(localStorage.getItem('accounts') || '{}');
+      } catch {
+        return {};
       }
-      function saveAccountLocal(cnpjDigits, account) {
-        const accounts = getAccountsLocal();
-        accounts[cnpjDigits] = account;
-        localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+
+    // Salva ou atualiza uma conta no localStorage usando o CNPJ como chave
+    function saveAccountLocal(cnpjDigits, account) {
+      const accounts = getAccountsLocal();
+      accounts[cnpjDigits] = account;
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+
+    // Envia o formulário sem recarregar a página
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Coleta os valores digitados pelo usuário
+      const cnpj = document.querySelector('#cnpj').value.replace(/\D/g, '');
+      const name = document.querySelector('#name').value;
+      const email = document.querySelector('#email').value;
+      const password = document.querySelector('#password').value;
+
+      // Validação simples do CNPJ: deve ter 14 dígitos numéricos
+      if (!cnpj || cnpj.length !== 14) {
+        status.textContent = 'Informe um CNPJ válido.';
+        result.classList.remove('hidden');
+        return;
       }
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const cnpj = document.querySelector('#cnpj').value.replace(/\D/g, '');
-        const name = document.querySelector('#name').value;
-        const email = document.querySelector('#email').value;
-        const password = document.querySelector('#password').value;
-        if (!cnpj || cnpj.length !== 14) {
-          status.textContent = 'Informe um CNPJ válido.';
-          result.classList.remove('hidden');
-          return;
-        }
-        saveAccountLocal(cnpj, { name, email, password, createdAt: new Date().toISOString() });
-        status.textContent = 'Cadastro realizado (local).';
-        result.classList.remove('hidden');
-      });
+      // Salva os dados no navegador e mostra mensagem de sucesso
+      saveAccountLocal(cnpj, { name, email, password, createdAt: new Date().toISOString() });
+      status.textContent = 'Cadastro realizado (local).';
+      result.classList.remove('hidden');
+    });
   </script>
 </body>
 </html>

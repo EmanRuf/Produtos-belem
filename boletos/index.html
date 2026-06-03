@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <!-- Menu de navegação lateral fixa com links para as páginas principais -->
   <div class="overlay-options">
     <nav>
       <ul>
@@ -19,15 +20,18 @@
     </nav>
   </div>
 
+  <!-- Botão que permite alternar o tema claro/escuro em toda a aplicação -->
   <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
 
   <main class="container">
     <h1>Boletos</h1>
     <p>Área de boletos e pagamentos (placeholder).</p>
+    <!-- Painel de conteúdo que mostra o estado dos boletos -->
     <div class="option-panel">
       <p>Nenhum boleto disponível.</p>
     </div>
   </main>
+  <!-- Só o theme.js é necessário aqui, pois não há lógica adicional nesta página -->
   <script src="/theme.js"></script>
 </body>
 </html>

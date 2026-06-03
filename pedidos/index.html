@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <!-- Menu de navegação fixa para todas as páginas principais -->
   <div class="overlay-options">
     <nav>
       <ul>
@@ -19,12 +20,14 @@
     </nav>
   </div>
 
+  <!-- Botão para alternar tema claro/escuro em toda a aplicação -->
   <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
 
   <main class="container">
     <h1>Pedidos</h1>
     <p>Confirme seu pedido abaixo.</p>
 
+    <!-- Formulário de pedido para verificar CNPJ e calcular dados do usuário -->
     <form id="cnpj-form">
       <label for="cnpj-input">CNPJ</label>
       <input id="cnpj-input" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" autocomplete="off" />
@@ -54,7 +57,7 @@
   <script src="/theme.js"></script>
   <script src="/script.js"></script>
   <script>
-    // Preenche o formulário com a sessão (se existir)
+    // Preenche o formulário com dados da sessão quando o usuário já estiver logado
     document.addEventListener('DOMContentLoaded', () => {
       const cnpj = sessionStorage.getItem('loggedCnpj');
       if (!cnpj) return;

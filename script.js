@@ -1,7 +1,10 @@
-// Tema agora é gerenciado por /theme.js
+// script.js: função geral de navegação e validação de login/cadastro.
+// O tema é gerenciado separadamente em /theme.js.
 
 // ===== SISTEMA DE ABAS =====
+// Seleciona botões de navegação por abas, caso existam na página.
 const tabButtons = document.querySelectorAll('.tab-btn');
+// Seleciona todos os painéis de conteúdo para alternar visibilidade.
 const panels = document.querySelectorAll('.panel');
 
 function showPanel(id) {
@@ -23,6 +26,7 @@ tabButtons.forEach((btn) => {
 });
 
 // Sub-opções dentro do painel de opções
+// Este trecho cuida de botões internos opcionais, caso existam na página.
 const optionButtons = document.querySelectorAll('.option-btn');
 const optionPanel = document.querySelector('#option-panel');
 optionButtons.forEach((btn) => {
@@ -38,11 +42,22 @@ optionButtons.forEach((btn) => {
   });
 });
 
+// Alterna visibilidade do menu de opções fixo no canto esquerdo.
+const optionsToggle = document.querySelector('#options-toggle');
+const overlayOptions = document.querySelector('.overlay-options');
+if (optionsToggle && overlayOptions) {
+  optionsToggle.addEventListener('click', () => {
+    const isCollapsed = overlayOptions.classList.toggle('collapsed');
+    optionsToggle.setAttribute('aria-expanded', String(!isCollapsed));
+  });
+}
+
 // Mostrar painel inicial por padrão
 // Mostrar painel inicial agora é o login
 showPanel('panel-login');
 
 // ===== Gerenciamento de contas (localStorage) =====
+// As contas são salvas e lidas do localStorage do navegador.
 function getAccounts() {
   try {
     return JSON.parse(localStorage.getItem('accounts') || '{}');
@@ -57,6 +72,7 @@ function saveAccount(cnpjDigits, account) {
   localStorage.setItem('accounts', JSON.stringify(accounts));
 }
 
+// Busca uma conta salva usando o CNPJ limpo de caracteres não numéricos.
 function findAccountByCnpj(cnpj) {
   const digits = cnpj.replace(/\D/g, '');
   const accounts = getAccounts();
@@ -64,6 +80,7 @@ function findAccountByCnpj(cnpj) {
 }
 
 // ===== Login simples =====
+// Valida as credenciais na página inicial e redireciona para pedidos.
 const loginForm = document.querySelector('#login-form');
 const loginStatus = document.querySelector('#login-status');
 const loginResult = document.querySelector('#login-result');
@@ -272,33 +289,5 @@ form.addEventListener('submit', async (event) => {
   } catch (error) {
     dataEl.textContent += '\nNão foi possível consultar a API pública. O CNPJ ainda foi validado localmente.';
   }
-
-  try {
-    const response = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cnpj}`);
-    if (!response.ok) {
-      throw new Error('Falha na consulta externa.');
-    }
-    const data = await response.json();
-    if (data.status === 'ERROR') {
-      dataEl.textContent = `Consulta indisponível: ${data.message || 'não foi possível obter informações.'}`;
-      return;
-    }
-    const formatted = JSON.stringify(
-      {
-        'Nome': data.nome,
-        'Fantasia': data.fantasia,
-        'Situação': data.situacao,
-        'Abertura': data.abertura,
-        'Natureza Jurídica': data.natureza_juridica,
-        'UF': data.uf,
-        'Município': data.municipio,
-        'Atividade Principal': data.atividade_principal?.map((item) => item.texto).join(', '),
-      },
-      null,
-      2
-    );
-    dataEl.textContent = formatted;
-  } catch (error) {
-    dataEl.textContent = 'Não foi possível consultar a API pública. O CNPJ ainda foi validado localmente.';
-  }
 });
+

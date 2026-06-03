@@ -1,3 +1,4 @@
+/* Variáveis CSS globais usadas para tema claro/escuro e cores padrão. */
 :root {
   color-scheme: light;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -37,6 +38,7 @@
   --status-invalid: #ef4444;
 }
 
+/* Estilos básicos do corpo e configuração de box-sizing para todos os elementos. */
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -55,6 +57,7 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Botão fixo de alternância de tema na interface. */
 .theme-toggle {
   position: fixed;
   top: 20px;
@@ -80,6 +83,7 @@ body {
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
 }
 
+/* Contêiner centralizado que envolve o conteúdo principal das páginas. */
 .container {
   width: min(760px, 100%);
   background: var(--bg-container);
@@ -107,6 +111,12 @@ form {
 
 label {
   font-weight: 600;
+}
+
+/* Adiciona um asterisco vermelho aos campos obrigatórios do formulário. */
+label.required::after {
+  content: ' *';
+  color: var(--status-invalid);
 }
 
 input {
@@ -196,11 +206,15 @@ button:hover {
   margin-bottom: 20px;
 }
 
-/* Barra de opções fixa no canto superior esquerdo */
+/* Barra de opções fixa no canto superior esquerdo com layout flexível. */
 .overlay-options {
   position: fixed;
   top: 14px;
   left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   background: rgba(255,255,255,0.02);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
@@ -211,15 +225,62 @@ button:hover {
   box-shadow: 0 6px 16px rgba(0,0,0,0.5);
 }
 
-.overlay-options ul { margin: 0; padding: 0; list-style: none; display: flex; gap: 8px; }
-.overlay-options a { color: var(--text-primary); text-decoration: none; font-weight: 600; padding: 6px 8px; border-radius: 8px; display: inline-block; }
-.overlay-options a:hover { background: rgba(255,255,255,0.03); }
+.overlay-options button.options-toggle {
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  color: var(--text-primary);
+  width: 42px;
+  height: 42px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.overlay-options button.options-toggle:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.08);
+}
+
+.overlay-options ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.overlay-options li {
+  margin: 0;
+}
+.overlay-options a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: inline-block;
+}
+.overlay-options a:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.overlay-options.collapsed nav {
+  display: none;
+}
 
 @media (max-width: 640px) {
   .overlay-options { left: 8px; top: 8px; padding: 6px; }
   .overlay-options ul { gap: 6px; }
 }
 
+/* Botões de aba que podem ser usados em telas com navegação por painel. */
 .tab-btn {
   background: transparent;
   border: 1px solid transparent;
