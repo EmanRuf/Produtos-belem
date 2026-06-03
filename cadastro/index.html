@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="overlay-options" aria-hidden="false">
+    <nav>
+      <ul>
+        <li><a href="/">Início</a></li>
+        <li><a href="/cadastro/">Cadastro</a></li>
+        <li><a href="/pedidos/">Meus pedidos</a></li>
+        <li><a href="/usuario/">Usuário</a></li>
+        <li><a href="/boletos/">Boletos</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
+
+  <main class="container">
+    <h1>Cadastro</h1>
+    <p>Formulário de cadastro independente.</p>
+    <form id="register-form-local">
+      <label for="name">Nome</label>
+      <input id="name" type="text" placeholder="Nome completo" required />
+        <label for="cnpj">CNPJ</label>
+        <input id="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" required />
+
+      <label for="email">E-mail</label>
+      <input id="email" type="email" placeholder="email@provedor.com" required />
+
+      <label for="password">Senha</label>
+      <input id="password" type="password" placeholder="Senha" required />
+
+      <button type="submit">Criar conta</button>
+    </form>
+    <section id="register-result" class="result hidden">
+      <p id="register-status"></p>
+    </section>
+  </main>
+
+  <script src="/theme.js"></script>
+  <script>
+    const form = document.querySelector('#register-form-local');
+    const status = document.querySelector('#register-status');
+    const result = document.querySelector('#register-result');
+      function getAccountsLocal() {
+        try { return JSON.parse(localStorage.getItem('accounts') || '{}'); } catch { return {}; }
+      }
+      function saveAccountLocal(cnpjDigits, account) {
+        const accounts = getAccountsLocal();
+        accounts[cnpjDigits] = account;
+        localStorage.setItem('accounts', JSON.stringify(accounts));
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cnpj = document.querySelector('#cnpj').value.replace(/\D/g, '');
+        const name = document.querySelector('#name').value;
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+        if (!cnpj || cnpj.length !== 14) {
+          status.textContent = 'Informe um CNPJ válido.';
+          result.classList.remove('hidden');
+          return;
+        }
+        saveAccountLocal(cnpj, { name, email, password, createdAt: new Date().toISOString() });
+        status.textContent = 'Cadastro realizado (local).';
+        result.classList.remove('hidden');
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meus Pedidos</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="overlay-options">
+    <nav>
+      <ul>
+        <li><a href="/">Início</a></li>
+        <li><a href="/cadastro/">Cadastro</a></li>
+        <li><a href="/pedidos/">Meus pedidos</a></li>
+        <li><a href="/usuario/">Usuário</a></li>
+        <li><a href="/boletos/">Boletos</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
+
+  <main class="container">
+    <h1>Pedidos</h1>
+    <p>Confirme seu pedido abaixo.</p>
+
+    <form id="cnpj-form">
+      <label for="cnpj-input">CNPJ</label>
+      <input id="cnpj-input" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" autocomplete="off" />
+
+      <label for="name-input">Nome do cliente</label>
+      <input id="name-input" type="text" placeholder="Nome completo" autocomplete="name" />
+
+      <label for="email-input">E-mail</label>
+      <input id="email-input" type="email" placeholder="email@provedor.com" autocomplete="email" />
+
+      <label for="quantity-input">Quantidade (mínimo 50 unidades)</label>
+      <input id="quantity-input" type="number" min="50" placeholder="50" autocomplete="off" />
+
+      <button type="submit">Verificar e Confirmar</button>
+    </form>
+
+    <section id="result" class="result hidden">
+      <p id="status"></p>
+      <pre id="data" class="data"></pre>
+    </section>
+
+    <section class="info">
+      <h2>Usu recomendado para compradores em grande escala</h2>
+      <p>O site valida o CNPJ, consulta a empresa e salva os dados do usuário para que o mesmo CNPJ não precise ser digitado várias vezes.</p>
+    </section>
+  </main>
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    // Preenche o formulário com a sessão (se existir)
+    document.addEventListener('DOMContentLoaded', () => {
+      const cnpj = sessionStorage.getItem('loggedCnpj');
+      if (!cnpj) return;
+      try {
+        const accounts = JSON.parse(localStorage.getItem('accounts') || '{}');
+        const acc = accounts[cnpj];
+        if (acc) {
+          // formatCnpj vem de script.js
+          if (typeof formatCnpj === 'function') {
+            document.querySelector('#cnpj-input').value = formatCnpj(cnpj);
+          } else {
+            document.querySelector('#cnpj-input').value = cnpj;
+          }
+          if (acc.name) document.querySelector('#name-input').value = acc.name;
+          if (acc.email) document.querySelector('#email-input').value = acc.email;
+        } else {
+          document.querySelector('#cnpj-input').value = cnpj;
+        }
+      } catch (e) {
+        document.querySelector('#cnpj-input').value = cnpj;
+      }
+    });
+  </script>
+</body>
+</html>

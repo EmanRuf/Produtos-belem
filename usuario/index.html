@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuário</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="overlay-options">
+    <nav>
+      <ul>
+        <li><a href="/">Início</a></li>
+        <li><a href="/cadastro/">Cadastro</a></li>
+        <li><a href="/pedidos/">Meus pedidos</a></li>
+        <li><a href="/usuario/">Usuário</a></li>
+        <li><a href="/boletos/">Boletos</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
+
+  <main class="container">
+    <h1>Usuário</h1>
+    <p>Altere seu nome abaixo e salve.</p>
+    <form id="user-form">
+      <label for="user-cnpj">CNPJ</label>
+      <input id="user-cnpj" type="text" disabled />
+
+      <label for="user-name">Nome</label>
+      <input id="user-name" type="text" placeholder="Nome completo" required />
+
+      <button type="submit">Salvar nome</button>
+    </form>
+    <section id="user-result" class="result hidden">
+      <p id="user-status"></p>
+    </section>
+  </main>
+  <script src="/theme.js"></script>
+  <script>
+    function getAccounts() {
+      try {
+        return JSON.parse(localStorage.getItem('accounts') || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+
+    function formatCnpj(value) {
+      const digits = value.replace(/\D/g, '').slice(0, 14);
+      return digits
+        .replace(/^(\d{2})(\d)/, '$1.$2')
+        .replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2')
+        .replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2')
+        .replace(/^(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d)/, '$1-$2');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const userForm = document.querySelector('#user-form');
+      const status = document.querySelector('#user-status');
+      const resultSection = document.querySelector('#user-result');
+      const cnpjInput = document.querySelector('#user-cnpj');
+      const nameInput = document.querySelector('#user-name');
+
+      const cnpj = sessionStorage.getItem('loggedCnpj');
+      if (!cnpj) {
+        status.textContent = 'Faça login primeiro para editar seu nome.';
+        status.className = 'status-invalid';
+        resultSection.classList.remove('hidden');
+        if (userForm) userForm.querySelector('button').disabled = true;
+        return;
+      }
+
+      const accounts = getAccounts();
+      const account = accounts[cnpj];
+      if (!account) {
+        status.textContent = 'Conta não encontrada. Faça login novamente.';
+        status.className = 'status-invalid';
+        resultSection.classList.remove('hidden');
+        if (userForm) userForm.querySelector('button').disabled = true;
+        return;
+      }
+
+      cnpjInput.value = formatCnpj(cnpj);
+      nameInput.value = account.name || '';
+
+      userForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const newName = nameInput.value.trim();
+        if (!newName) {
+          status.textContent = 'Informe um nome válido.';
+          status.className = 'status-invalid';
+          resultSection.classList.remove('hidden');
+          return;
+        }
+        account.name = newName;
+        accounts[cnpj] = account;
+        saveAccounts(accounts);
+        status.textContent = 'Nome atualizado com sucesso.';
+        status.className = 'status-valid';
+        resultSection.classList.remove('hidden');
+      });
+    });
+  </script>
+</body>
+</html>

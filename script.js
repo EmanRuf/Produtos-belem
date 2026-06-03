@@ -1,3 +1,132 @@
+// Tema agora é gerenciado por /theme.js
+
+// ===== SISTEMA DE ABAS =====
+const tabButtons = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+
+function showPanel(id) {
+  panels.forEach((p) => {
+    if (p.id === id) p.classList.remove('hidden');
+    else p.classList.add('hidden');
+  });
+  tabButtons.forEach((b) => {
+    if (b.dataset.target === id) b.classList.add('tab-active');
+    else b.classList.remove('tab-active');
+  });
+}
+
+tabButtons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    if (target) showPanel(target);
+  });
+});
+
+// Sub-opções dentro do painel de opções
+const optionButtons = document.querySelectorAll('.option-btn');
+const optionPanel = document.querySelector('#option-panel');
+optionButtons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const opt = btn.dataset.option;
+    if (opt === 'meus-pedidos') {
+      optionPanel.textContent = 'Aqui estão seus pedidos (placeholder).';
+    } else if (opt === 'usuario') {
+      optionPanel.textContent = 'Informações do usuário (placeholder).';
+    } else if (opt === 'boletos') {
+      optionPanel.textContent = 'Boletos e pagamentos (placeholder).';
+    }
+  });
+});
+
+// Mostrar painel inicial por padrão
+// Mostrar painel inicial agora é o login
+showPanel('panel-login');
+
+// ===== Gerenciamento de contas (localStorage) =====
+function getAccounts() {
+  try {
+    return JSON.parse(localStorage.getItem('accounts') || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveAccount(cnpjDigits, account) {
+  const accounts = getAccounts();
+  accounts[cnpjDigits] = account;
+  localStorage.setItem('accounts', JSON.stringify(accounts));
+}
+
+function findAccountByCnpj(cnpj) {
+  const digits = cnpj.replace(/\D/g, '');
+  const accounts = getAccounts();
+  return accounts[digits];
+}
+
+// ===== Login simples =====
+const loginForm = document.querySelector('#login-form');
+const loginStatus = document.querySelector('#login-status');
+const loginResult = document.querySelector('#login-result');
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const cnpj = document.querySelector('#login-cnpj').value.replace(/\D/g, '');
+    const password = document.querySelector('#login-password').value;
+    if (!cnpj || cnpj.length !== 14) {
+      loginStatus.textContent = 'Informe um CNPJ válido.';
+      loginStatus.className = 'status-invalid';
+      loginResult.classList.remove('hidden');
+      return;
+    }
+    if (!isValidCnpj(cnpj)) {
+      loginStatus.textContent = 'CNPJ inválido.';
+      loginStatus.className = 'status-invalid';
+      loginResult.classList.remove('hidden');
+      return;
+    }
+    const account = findAccountByCnpj(cnpj);
+    if (!account || account.password !== password) {
+      loginStatus.textContent = 'CNPJ ou senha incorretos.';
+      loginStatus.className = 'status-invalid';
+      loginResult.classList.remove('hidden');
+      return;
+    }
+    // sucesso: armazenar sessão simples e redirecionar para /pedidos/index.html
+    sessionStorage.setItem('loggedCnpj', cnpj);
+    window.location.href = '/pedidos/index.html';
+  });
+}
+
+// Registro: submissão simples (exemplo local)
+const registerForm = document.querySelector('#register-form');
+const registerStatus = document.querySelector('#register-status');
+const registerResult = document.querySelector('#register-result');
+if (registerForm) {
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const cnpj = document.querySelector('#reg-cnpj').value.replace(/\D/g, '').trim();
+    const name = document.querySelector('#reg-name').value.trim();
+    const email = document.querySelector('#reg-email').value.trim();
+    const password = document.querySelector('#reg-password').value;
+    if (!cnpj || cnpj.length !== 14 || !isValidCnpj(cnpj)) {
+      registerStatus.textContent = 'Informe um CNPJ válido.';
+      registerStatus.className = 'status-invalid';
+      registerResult.classList.remove('hidden');
+      return;
+    }
+    const account = { name, email, password, createdAt: new Date().toISOString() };
+    saveAccount(cnpj, account);
+    registerStatus.textContent = 'Cadastro realizado com sucesso.';
+    registerStatus.className = 'status-valid';
+    registerResult.classList.remove('hidden');
+    // Após cadastro, abrir opções
+    const tabOptions = document.querySelector('#tab-options');
+    if (tabOptions) tabOptions.click();
+  });
+}
+
+// ===== FIM DO SISTEMA DE ABAS =====
+
 const form = document.querySelector('#cnpj-form');
 const input = document.querySelector('#cnpj-input');
 const nameInput = document.querySelector('#name-input');
