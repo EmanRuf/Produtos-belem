@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amaciante - Verificador de CNPJ e Pedido</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Amaciante para varejo</h1>
+    <p>Verifique o CNPJ e confirme seu pedido de amaciante no varejo. Mínimo de 50 unidades.</p>
+
+    <form id="cnpj-form">
+      <label for="cnpj-input">CNPJ</label>
+      <input
+        id="cnpj-input"
+        type="text"
+        inputmode="numeric"
+        placeholder="00.000.000/0000-00"
+        maxlength="18"
+        autocomplete="off"
+      />
+
+      <label for="name-input">Nome do cliente</label>
+      <input
+        id="name-input"
+        type="text"
+        placeholder="Nome completo"
+        autocomplete="name"
+      />
+
+      <label for="email-input">E-mail</label>
+      <input
+        id="email-input"
+        type="email"
+        placeholder="email@provedor.com"
+        autocomplete="email"
+      />
+
+      <label for="quantity-input">Quantidade (mínimo 50 unidades)</label>
+      <input
+        id="quantity-input"
+        type="number"
+        min="50"
+        placeholder="50"
+        autocomplete="off"
+      />
+
+      <button type="submit">Verificar e Confirmar</button>
+    </form>
+
+    <section id="result" class="result hidden">
+      <p id="status"></p>
+      <pre id="data" class="data"></pre>
+    </section>
+
+    <section class="info">
+      <h2>Como funciona</h2>
+      <p>O site valida o CNPJ, consulta a empresa e salva os dados do usuário para que o mesmo CNPJ não precise ser digitado várias vezes.</p>
+      <p>Abra o site pelo servidor e use <strong>http://localhost:3000</strong> para funcionar corretamente.</p>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

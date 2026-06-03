@@ -1,0 +1,123 @@
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
+  color: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+
+.container {
+  width: min(760px, 100%);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 28px;
+  box-shadow: 0 28px 90px rgba(59, 130, 246, 0.18);
+  padding: 38px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 2.5vw, 2.75rem);
+}
+
+p {
+  line-height: 1.7;
+  margin: 0 0 24px;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  border: 1px solid #93c5fd;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  outline: none;
+  background: #f8fbff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+}
+
+button {
+  width: fit-content;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.result {
+  margin-top: 24px;
+  padding: 22px 22px 18px;
+  border-radius: 22px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+}
+
+.result.hidden {
+  display: none;
+}
+
+.status-valid {
+  color: #047857;
+  font-weight: 700;
+}
+
+.status-invalid {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.data {
+  margin: 14px 0 0;
+  white-space: pre-wrap;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.95rem;
+}
+
+.info {
+  margin-top: 32px;
+  color: #475569;
+}
+
+.info h2 {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 24px;
+  }
+}
